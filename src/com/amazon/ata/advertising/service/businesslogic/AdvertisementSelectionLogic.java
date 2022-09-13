@@ -1,10 +1,7 @@
 package com.amazon.ata.advertising.service.businesslogic;
 
 import com.amazon.ata.advertising.service.dao.ReadableDao;
-import com.amazon.ata.advertising.service.model.AdvertisementContent;
-import com.amazon.ata.advertising.service.model.EmptyGeneratedAdvertisement;
-import com.amazon.ata.advertising.service.model.GeneratedAdvertisement;
-import com.amazon.ata.advertising.service.model.RequestContext;
+import com.amazon.ata.advertising.service.model.*;
 import com.amazon.ata.advertising.service.targeting.TargetingEvaluator;
 import com.amazon.ata.advertising.service.targeting.TargetingGroup;
 
@@ -64,10 +61,10 @@ public class AdvertisementSelectionLogic {
     public GeneratedAdvertisement selectAdvertisement(String customerId, String marketplaceId) {
         TargetingEvaluator evaluator = new TargetingEvaluator(new RequestContext(customerId,marketplaceId));
 
-        GeneratedAdvertisement generatedAdvertisement = new EmptyGeneratedAdvertisement();
+//        GeneratedAdvertisement generatedAdvertisement = new EmptyGeneratedAdvertisement();
         if (StringUtils.isEmpty(marketplaceId)) {
             LOG.warn("MarketplaceId cannot be null or empty. Returning empty ad.");
-            return generatedAdvertisement;
+//            return generatedAdvertisement;
         }
 //        } else {
 //            final List<AdvertisementContent> contents = contentDao.get(marketplaceId);
@@ -90,6 +87,7 @@ public class AdvertisementSelectionLogic {
                         .anyMatch(TargetingPredicateResult::isTrue) ? advertisementContent : null;
                 })
                 .filter(Objects::nonNull)
-                .findAny().get());
+                .findAny()
+                .orElse(new EmptyAdvertisementContent()));
     }
 }

@@ -5,13 +5,17 @@ import com.amazon.ata.advertising.service.targeting.predicate.TargetingPredicate
 import com.amazon.ata.advertising.service.targeting.predicate.TargetingPredicateResult;
 
 import java.util.List;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Evaluates TargetingPredicates for a given RequestContext.
  */
 public class TargetingEvaluator {
     public static final boolean IMPLEMENTED_STREAMS = true;
-    public static final boolean IMPLEMENTED_CONCURRENCY = false;
+    public static final boolean IMPLEMENTED_CONCURRENCY = true;
     private final RequestContext requestContext;
 
     /**
@@ -42,8 +46,19 @@ public class TargetingEvaluator {
 //        return allTruePredicates ? TargetingPredicateResult.TRUE :
 //                                   TargetingPredicateResult.FALSE;
 
-        return (targetingGroup.getTargetingPredicates().stream()
-                .allMatch(targetingPredicate -> targetingPredicate.evaluate(requestContext).isTrue()))
-                ? TargetingPredicateResult.TRUE : TargetingPredicateResult.FALSE;
+        ExecutorService executorService = Executors.newCachedThreadPool();
+        try {
+            return executorService.submit(() -> (targetingGroup.getTargetingPredicates().parallelStream()
+                    .allMatch(targetingPredicate -> targetingPredicate.evaluate(requestContext).isTrue()))
+                    ? TargetingPredicateResult.TRUE : TargetingPredicateResult.FALSE).get();
+        } catch (CancellationException | InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
+
+        return TargetingPredicateResult.FALSE;
+
+//        return (targetingGroup.getTargetingPredicates().stream()
+//                .allMatch(targetingPredicate -> targetingPredicate.evaluate(requestContext).isTrue()))
+//                ? TargetingPredicateResult.TRUE : TargetingPredicateResult.FALSE;
     }
 }
