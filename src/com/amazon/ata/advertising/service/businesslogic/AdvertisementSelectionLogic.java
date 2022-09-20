@@ -60,34 +60,48 @@ public class AdvertisementSelectionLogic {
      */
     public GeneratedAdvertisement selectAdvertisement(String customerId, String marketplaceId) {
         TargetingEvaluator evaluator = new TargetingEvaluator(new RequestContext(customerId,marketplaceId));
+        SortedMap<TargetingGroup, AdvertisementContent> sortedMap =
+                new TreeMap<>(Comparator.comparingDouble(TargetingGroup::getClickThroughRate).reversed());
 
-//        GeneratedAdvertisement generatedAdvertisement = new EmptyGeneratedAdvertisement();
         if (StringUtils.isEmpty(marketplaceId)) {
             LOG.warn("MarketplaceId cannot be null or empty. Returning empty ad.");
-//            return generatedAdvertisement;
         }
-//        } else {
-//            final List<AdvertisementContent> contents = contentDao.get(marketplaceId);
-//
-//            if (CollectionUtils.isNotEmpty(contents)) {
-//                AdvertisementContent randomAdvertisementContent = contents.get(random.nextInt(contents.size()));
-//                generatedAdvertisement = new GeneratedAdvertisement(randomAdvertisementContent);
-//            }
-//
-//        }
-//
-//        return generatedAdvertisement;
 
-        return new GeneratedAdvertisement(contentDao.get(marketplaceId).stream()
-                .map(advertisementContent -> {
-                        return targetingGroupDao.get(advertisementContent.getContentId())
-                        .stream()
-                        .sorted(Comparator.comparingDouble(TargetingGroup::getClickThroughRate))
-                        .map(evaluator::evaluate)
-                        .anyMatch(TargetingPredicateResult::isTrue) ? advertisementContent : null;
-                })
-                .filter(Objects::nonNull)
-                .findAny()
-                .orElse(new EmptyAdvertisementContent()));
+        for (AdvertisementContent advertisementContent : contentDao.get(marketplaceId)) {
+            targetingGroupDao.get(advertisementContent.getContentId())
+                    .stream()
+                    .sorted(sortedMap.comparator())
+                    .filter(targetingGroup -> evaluator.evaluate(targetingGroup).isTrue())
+                    .findFirst()
+                    .ifPresent(targetingGroup -> sortedMap.put(targetingGroup, advertisementContent));
+        }
+
+        if (!sortedMap.isEmpty()) {
+            return new GeneratedAdvertisement(sortedMap.get(sortedMap.firstKey()));
+        }
+
+//        return new GeneratedAdvertisement(contentDao.get(marketplaceId).stream()
+//                .map(advertisementContent ->
+//                    targetingGroupDao.get(advertisementContent.getContentId())
+//                            .stream()
+//                            .sorted(Comparator.comparingDouble(TargetingGroup::getClickThroughRate).reversed())
+//                            .filter(targetingGroup -> evaluator.evaluate(targetingGroup).isTrue())
+//                            .findFirst()
+//                            .ifPresent(targetingGroup -> sortedMap.put(targetingGroup, advertisementContent)))
+//                .findFirst()
+//                .orElse(new EmptyAdvertisementContent()));
+
+
+//        return new GeneratedAdvertisement(contentDao.get(marketplaceId).stream()
+//                .map(advertisementContent -> targetingGroupDao.get(advertisementContent.getContentId())
+//                    .stream()
+//                    .sorted(Comparator.comparingDouble(TargetingGroup::getClickThroughRate).reversed())
+//                    .map(evaluator::evaluate)
+//                    .anyMatch(TargetingPredicateResult::isTrue) ? advertisementContent : null)
+//                .filter(Objects::nonNull)
+//                .findFirst()
+//                .orElse(new EmptyAdvertisementContent()));
+
+        return new GeneratedAdvertisement(new AdvertisementContent());
     }
 }

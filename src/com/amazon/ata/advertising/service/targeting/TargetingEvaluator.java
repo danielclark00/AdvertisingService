@@ -54,6 +54,7 @@ public class TargetingEvaluator {
         } catch (CancellationException | InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }
+        executorService.shutdown();
 
         return TargetingPredicateResult.FALSE;
 
