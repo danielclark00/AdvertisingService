@@ -30,3 +30,5 @@ My Contributions:
 My Contributions:
 - [AdvertisementSelectionLogic](https://github.com/danielclark00/AdvertisingService/commit/2b05c051439cd6edfea51cf65c3dee7fe5816017#diff-36f50daf88514c690c1d9339374398391757eec05677bedfbe6d07d6b5c8e7f8)
 - [TagetingEvaluator](https://github.com/danielclark00/AdvertisingService/commit/2b05c051439cd6edfea51cf65c3dee7fe5816017#diff-02dc29df07086cb92039935496cf1f687b78fda8da17ea97a0634412dd2d042d)
+
+note: This is a project adapted from Amazon Technical Academy by Bloomtech.
