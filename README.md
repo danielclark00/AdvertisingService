@@ -1,51 +1,32 @@
 #  Advertising Service
 
-## Preliminaries: The More Things Change
-
-### Ambiguity, Complexity, and Scope
-
-Ambiguity will be increasing from previous projects. Tasks instructions will contain fewer details, as we expect you to 
-reference documentation and deep dive into the code yourself to understand how things work. Even if there isn't a 
-specific task for it, you're of course welcome to create any diagrams or other notes as a reference for yourself or 
-others!
-
-There will be some increasing complexity as we work with ExecutorServices for the first time.
-
-You'll have your fellow participants in the same situation as you, so remember to collaborate: rely on each other for 
-assistance, and share your own knowledge.
-
-## Unit 7 Project Progress and Tracking
-
-### Doneness checklist
-
-You're done with the project when: 
-
-* You have successfully passed all tests in CodeGrade
-
-### cloudformation commands
-
-You'll want to run the following commands to setup your DynamoDB tables for this project (note that you will need to wait for the first command's stack to finish building before running the next commands):
-
-```
-aws cloudformation create-stack --region us-west-2 --stack-name advertisingservice-createtables --template-body file://configurations/cloudFormation/ddb_tables.template.yml --capabilities CAPABILITY_IAM
-aws dynamodb batch-write-item --request-items file://configurations/cloudFormation/content_table.json
-aws dynamodb batch-write-item --request-items file://configurations/cloudFormation/targeting_group_table.json
-aws dynamodb batch-write-item --request-items file://configurations/cloudFormation/targeting_group_table2.json
-```
-
 ## The Problem: ATA Advertising
 
 ATA's AdvertisingService serves advertisements for ATA. These advertisements show up on the retail website and use 
 targeting to present different ATA advertisements to each individual. The targeting tries to take advantage of what 
 Amazon knows about you to show you the particular ad that is most likely to appeal to you.
 
-An overview of the service is covered in the [design document](DESIGN_DOCUMENT.md). We encourage you to read that now
-before continuing below.
+An overview of the service is covered in the [design document](DESIGN_DOCUMENT.md).
 
 ## Project Mastery Tasks
 
+#### Under each mastery task I have linked to parts of the project that are my code. 
 ### [Mastery Task 1: Filter out the noise](tasks/project-mastery-tasks/MasteryTask01.md)
+
+My Contributions:
+- [AddTargetingGroupActivity](https://github.com/danielclark00/AdvertisingService/commit/a99a6e9cf2269a3e8a825a723a7ba9da9e070a3b#diff-b75ca21099df519fe8211d569ede706ec1e35f3070ac837d1fbe516abc2a7a50)
+- [AdvertisementSelectionLogic](https://github.com/danielclark00/AdvertisingService/commit/a99a6e9cf2269a3e8a825a723a7ba9da9e070a3b#diff-36f50daf88514c690c1d9339374398391757eec05677bedfbe6d07d6b5c8e7f8)
+- [TagetingEvaluator](https://github.com/danielclark00/AdvertisingService/commit/a99a6e9cf2269a3e8a825a723a7ba9da9e070a3b#diff-02dc29df07086cb92039935496cf1f687b78fda8da17ea97a0634412dd2d042d)
+- [TargetingPredicateTypeConverter](https://github.com/danielclark00/AdvertisingService/commit/a99a6e9cf2269a3e8a825a723a7ba9da9e070a3b#diff-e3546f597940d21a9b9d71781a76c969b09699339b0ba67077e4093bff26749e)
+
 ### [Mastery Task 2: Concurrent Tasks](tasks/project-mastery-tasks/MasteryTask02.md)
+
+My Contributions:
+- [AdvertisementSelectionLogic](https://github.com/danielclark00/AdvertisingService/commit/58a91041de348d7db6b415cb8f52d8926ea0f65a#diff-36f50daf88514c690c1d9339374398391757eec05677bedfbe6d07d6b5c8e7f8)
+- [TagetingEvaluator](https://github.com/danielclark00/AdvertisingService/commit/58a91041de348d7db6b415cb8f52d8926ea0f65a#diff-02dc29df07086cb92039935496cf1f687b78fda8da17ea97a0634412dd2d042d)
+
 ### [Mastery Task 3: Ads don't grow on trees (or do they?)](tasks/project-mastery-tasks/MasteryTask03.md)
 
-
+My Contributions:
+- [AdvertisementSelectionLogic](https://github.com/danielclark00/AdvertisingService/commit/2b05c051439cd6edfea51cf65c3dee7fe5816017#diff-36f50daf88514c690c1d9339374398391757eec05677bedfbe6d07d6b5c8e7f8)
+- [TagetingEvaluator](https://github.com/danielclark00/AdvertisingService/commit/2b05c051439cd6edfea51cf65c3dee7fe5816017#diff-02dc29df07086cb92039935496cf1f687b78fda8da17ea97a0634412dd2d042d)
